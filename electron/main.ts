@@ -1,8 +1,9 @@
 import { app, BrowserWindow } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
+import { Menu } from 'electron'
 import path from 'node:path'
-
+Menu.setApplicationMenu(null)
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
