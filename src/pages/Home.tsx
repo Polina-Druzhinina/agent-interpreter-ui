@@ -18,7 +18,7 @@ function Home() {
                 window.ipcRenderer.send(
                     "show-error-dialog",
                     "Ошибка чтения",
-                    `Файд "${selectedFile.name}" не является файлом GraphML.`
+                    `Файл "${selectedFile.name}" не является файлом GraphML.`
                 );
                 return;
             }
