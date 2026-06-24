@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Menu, dialog, ipcMain } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -30,6 +30,8 @@ function createWindow() {
   win = new BrowserWindow({
     width:1000,
     height:600,
+    minHeight: 600,
+    minWidth: 1000,
     icon: path.join(process.env.VITE_PUBLIC, 'icon-white.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
@@ -67,4 +69,11 @@ app.on('activate', () => {
   }
 })
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  Menu.setApplicationMenu(null)
+  createWindow()
+})
+
+ipcMain.on("show-error-dialog", (event, title, message) => {
+  dialog.showErrorBox(title, message)
+})
