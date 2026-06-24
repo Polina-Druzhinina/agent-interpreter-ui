@@ -3,9 +3,12 @@ import launch from "../assets/launch-gray.png"
 import settings from "../assets/setting-gray.png"
 import loading from "../assets/loading.png"
 import "../styles/home.css"
+import "../styles/base.css"
 import React, {useRef} from "react"
+import { useNavigate } from "react-router-dom"
 function Home() {
     const fileInputRef = useRef<HTMLInputElement>(null); //ссылка на input
+    const navigate = useNavigate()
     const [fileName, setFileName] = React.useState("")
     const handleButtonClick = () => { //функция, вызывающая клик по скрытому input
         fileInputRef.current?.click();
@@ -31,8 +34,10 @@ function Home() {
             body: formData
             })
             .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(err => console.error("Fetch error:", err));
+            .then(data => {
+            console.log(data)
+            navigate("/junior-gardener")
+            })
         }
     }
     return (
