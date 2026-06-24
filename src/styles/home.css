@@ -1,0 +1,70 @@
+.home{
+    display: flex;
+    margin: 0;
+    border: 2px solid black;
+    align-items: center;
+}
+.sidebar{
+    width: 20%;
+    height: 100vh;
+    background-color: #1E6BB8;
+    padding: 25px 15px;
+}
+
+.logo{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.menu-item{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    width: fit-content;
+    padding: 5px 5px;
+    cursor: pointer;
+}
+
+.active{
+    color: #FFFFFF;
+}
+
+.active:hover{
+    background-color: #64A4FF;
+}
+
+.disabled{
+    color: #388FE6;
+}
+
+.content{
+    background-image: url("../assets/graphs.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+    flex: 1;
+    position: relative;
+}
+
+.message{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 22px;
+    font-weight: bold;
+    background-color: #EFEFEF;
+    padding: 24px 48px;
+    white-space: nowrap;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+input{
+    display: none;
+}
