@@ -1,288 +1,145 @@
-# API Contract  
-## State Machine Interpreter Backend
+# 📖 State Machine Interpreter API Documentation
+
+**Версия:** 1.0.0
+**Базовый URL:** http://localhost:8000
+**Формат данных:** JSON / multipart/form-data
+**CORS:** Разрешён для всех источников (*)
 
 ---
 
-# 1. Назначение документа
+## 📋 Общая структура ответов
+Все эндпоинты возвращают JSON-объект с полем "status":
 
-Данный документ описывает формат взаимодействия между:
-
-- **Backend** — FastAPI сервис интерпретатора машин состояний
-- **Frontend** — Electron + React интерфейс
-
-Документ определяет:
-
-- список доступных API‑endpoint
-- формат входных данных (Request)
-- формат выходных данных (Response)
-- возможные статусы выполнения
-- правила обработки ошибок
-- принципы расширяемости
-
-Этот документ является **единственным источником истины** для взаимодействия frontend и backend.  
-Обе стороны обязаны строго следовать указанному формату.
+- "success" — Запрос обработан успешно
+- "crash" — Симуляция прервана из-за столкновения/ошибки агента (возвращает состояние до падения)
+- "error" — Ошибка парсинга, неподдерживаемая платформа или внутренняя ошибка сервера
 
 ---
 
-# 2. Архитектура взаимодействия
+## 🟢 1. GET /
+**Назначение:** Проверка доступности сервера.
 
-Система построена по клиент‑серверной модели:
-
-```
-Frontend (Electron + React)
-        ↓ HTTP (JSON)
-FastAPI Backend
-        ↓
-Interpreter Core (StateMachine)
-        ↓
-JSON Response
-```
-
-Frontend отправляет HTTP‑запросы.  
-Backend выполняет интерпретацию и возвращает JSON‑ответ.
-
-Все данные передаются **исключительно в формате JSON**.
+**Ответ:**
+{ "message": "Backend is running" }
 
 ---
 
-# 3. Общие правила
+## 📤 2. POST /load-file
+**Назначение:** Загрузка .graphml файла, парсинг и возврат метаданных машины состояний без запуска.
 
-1. Все ответы backend должны быть валидным JSON.
-2. Все endpoint возвращают поле `status`.
-3. Возможные значения поля `status`:
-   - `"success"`
-   - `"error"`
-   - `"timeout"`
-4. В случае ошибки обязательно возвращается поле `error`.
-5. Все имена полей используют **camelCase**.
-6. Backend не возвращает Python‑объекты напрямую — только сериализованные данные.
-7. Любое изменение формата API должно отражаться в этом документе.
+**Запрос:** multipart/form-data
+- file: (File) .graphml файл с описанием машины состояний
 
----
-
-# 4. Endpoint: POST /load
-
-## Назначение
-
-Загрузка и парсинг машины состояний из GraphML.
-
----
-
-## Request
-
-```json
-{
-  "xml": "string"
-}
-```
-
----
-
-## Response (success)
-
-```json
+**Ответ (Успех):**
 {
   "status": "success",
   "platform": "junior-gardener",
-  "name": "MachineName",
+  "name": "MyMachine",
   "statesCount": 10,
-  "transitionsCount": 15,
-  "requiredParameters": ["width", "height", "orientation"]
+  "transitionsCount": 11,
+  "requiredParameters": ["cMover1", "cFlower1"]
 }
-```
 
----
-
-## Response (error)
-
-```json
+**Ответ (Ошибка):**
 {
   "status": "error",
-  "error": {
-    "type": "ParsingError",
-    "message": "Invalid GraphML format"
-  }
+  "message": "No state machines found"
 }
-```
 
 ---
 
-# 5. Endpoint: POST /run
+## 🚀 3. POST /run
+**Назначение:** Запуск симуляции машины состояний. Передача XML-строки и параметров среды выполнения.
 
-## Назначение
-
-Запуск машины состояний с заданными параметрами среды выполнения.
-
----
-
-## Request
-
-```json
+**Запрос:** application/json
 {
+  "xml": "<graphml>...содержимое файла...</graphml>",
   "parameters": {
     "width": 10,
     "height": 8,
-    "orientation": "EAST"
+    "orientation": "SOUTH"
   }
 }
-```
 
----
+**Поведение в зависимости от platform (определяется автоматически из XML):**
 
-## Response (success)
+1. junior-gardener:
+   - Ожидаемые parameters: width (int), height (int), orientation (NORTH/SOUTH/WEST/EAST)
 
-```json
+2. junior-reader:
+   - Ожидаемые parameters: message (string), speed (float)
+
+**Ответ (Успех):**
 {
   "status": "success",
-  "timeout": false,
-  "calledSignals": ["impulseA"],
-  "allSignals": ["entry", "impulseA", "break"],
-  "agentState": {
-    "x": 3,
-    "y": 4,
-    "orientation": "EAST",
-    "field": [[0,0,0],[0,-1,0]]
+  "result": {
+    "timeout": false,
+    "signals": ["entry", "impulseA", "break"],
+    "calledSignals": ["impulseA"],
+    "field": [[0, 1, -1], [0, 0, 2]],
+    "position": { "x": 2, "y": 1 },
+    "orientation": 1
   }
 }
-```
 
----
-
-## Response (timeout)
-
-```json
+**Ответ (Crash - Gardener):**
 {
-  "status": "timeout",
-  "timeout": true,
-  "calledSignals": ["impulseA"]
-}
-```
-
----
-
-## Response (error)
-
-```json
-{
-  "status": "error",
-  "timeout": false,
-  "error": {
-    "type": "GardenerCrash",
-    "message": "Hit a wall"
-  },
-  "calledSignals": ["impulseA"]
-}
-```
-
----
-
-# 6. Структура поля agentState
-
-Поле `agentState` зависит от типа агента.
-
----
-
-## Для junior-gardener
-
-```json
-{
-  "x": "number",
-  "y": "number",
-  "orientation": "string",
-  "field": "number[][]"
-}
-```
-
----
-
-## Для junior-reader
-
-```json
-{
-  "currentChar": "string",
-  "position": "number"
-}
-```
-
----
-
-# 7. Стандартная структура ответа
-
-Каждый ответ backend имеет одну из следующих форм:
-
----
-
-## ✅ Успешное выполнение
-
-```json
-{
-  "status": "success",
-  "timeout": false,
-  "calledSignals": [],
-  "agentState": {}
-}
-```
-
----
-
-## ⏱ Таймаут
-
-```json
-{
-  "status": "timeout",
-  "timeout": true,
-  "calledSignals": []
-}
-```
-
----
-
-## ❌ Ошибка
-
-```json
-{
-  "status": "error",
-  "timeout": false,
-  "error": {
-    "type": "ErrorType",
-    "message": "Description"
+  "status": "crash",
+  "message": "Crash: out of bounds!",
+  "result": {
+    "timeout": false,
+    "signals": [],
+    "calledSignals": [],
+    "field": [[0, 1, -1]],
+    "position": { "x": 2, "y": 1 },
+    "orientation": 1
   }
 }
-```
+*(Для junior-reader поля field, position, orientation возвращают null)*
+
+**Ответ (Ошибка):**
+{
+  "status": "error",
+  "message": "Unsupported platform: unknown-platform"
+}
 
 ---
 
-# 8. Расширяемость
+## ⚡ 4. POST /run-file
+**Назначение:** Быстрый запуск симуляции через загрузку файла.
+Ограничение: На данный момент работает только для junior-gardener (поле инициализируется как 10x8 по умолчанию).
 
-1. Добавление новых агентов не должно изменять базовую структуру ответа.
-2. Новые агенты могут расширять только поле `agentState`.
-3. Поля `status`, `timeout`, `calledSignals` являются обязательными.
-4. Frontend должен ориентироваться только на документированный формат.
+**Запрос:** multipart/form-data
+- file: (File) .graphml файл (платформа должна содержать слово gardener)
 
----
+**Ответ:** Аналогичен POST /run (структура result с полем field, position, orientation).
 
-# 9. Версионирование
-
-Текущая версия API: **v1**
-
-При изменении структуры response необходимо:
-
-- увеличить версию API
-- обновить данный документ
-- согласовать изменения с frontend
+**Ответ (Ошибка платформы):**
+{
+  "status": "error",
+  "message": "run-file supports only Gardener for now"
+}
 
 ---
 
-# 10. Цель использования FastAPI
+## 📊 Справочник данных
 
-FastAPI автоматически генерирует документацию по адресу:
+### Значения ячеек поля (field)
+- 0: Пустая клетка
+- -1: Стена
+- 1: Роза
+- 2: Мята
+- 3: Василёк
 
-```
-http://localhost:8000/docs
-```
-
-Данная документация является техническим подтверждением соответствия backend настоящему API‑контракту.
-
-Frontend ориентируется именно на эту структуру.
+### Ориентация (orientation)
+- 0: Юг (SOUTH)
+- 1: Север (NORTH)
+- 2: Запад (WEST)
+- 3: Восток (EAST)
 
 ---
+
+## 🛡️ Обработка ошибок
+1. Парсинг XML: Если структура GraphML невалидна или отсутствует ключ gFormat, вернётся status: "error".
+2. Краш агента: GardenerCrashException перехватывается на бэкенде. Сервер не падает, возвращает status: "crash" и состояние поля в момент аварии.
+3. Таймаут: Если машина состояний выполняется дольше лимита, в ответе будет "timeout": true.
