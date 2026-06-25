@@ -1,3 +1,13 @@
+import sys
+import os
+
+# Фикс для PyInstaller: добавляем временную папку распаковки в пути поиска
+if getattr(sys, 'frozen', False):
+    # Если запущен как .exe
+    application_path = sys._MEIPASS
+    sys.path.insert(0, application_path)
+
+
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -188,3 +198,8 @@ async def run_file(file: UploadFile = File(...)):
         return {"status": "crash", "message": str(e)}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+    
+if __name__ == "__main__":
+    import uvicorn
+    # Передаем сам объект app, а не строку "main:app"
+    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")

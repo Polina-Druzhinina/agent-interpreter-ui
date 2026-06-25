@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 dist-electron
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +23,17 @@ dist-electron
 *.njsproj
 *.sln
 *.sw?
+
+# Python & PyInstaller
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+*.egg-info/
+.eggs/
+build/
+*.spec
