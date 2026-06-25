@@ -1,0 +1,57 @@
+.content-state{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    gap: 10px;
+    width: 100%;
+}
+
+.car-state{
+    color: #0A3963;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.fsm-meta{
+    height: 85%;
+    background-color: #EFEFEF;
+    padding: 10px;
+}
+
+.meta-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    align-items: flex-start;
+    width: 100%;
+}
+
+.description{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.description span{
+    font-size: 16px;
+    color: #2B3641;
+    font-weight: bold;
+}
+
+button{
+    background-color: #7FB5FF;
+    border: none;
+    color: #FFFFFF;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;     
+    justify-content: center;     
+    gap: 8px;               
+    cursor: pointer;
+}
+
+.icon-reduct{
+    width: 30px;
+    height: 30px;
+}
