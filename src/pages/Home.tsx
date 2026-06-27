@@ -13,7 +13,7 @@ function Home() {
             <div className="logo">
                 <img src={logo} alt="logo" />
             </div>
-            <input type="file"
+            <input className="uploadFile" type="file"
             ref={fileInputRef}
             onChange={handleFileChange}
             accept=".graphml"
