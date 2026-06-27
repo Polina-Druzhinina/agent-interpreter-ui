@@ -91,6 +91,7 @@ function createWindow() {
 
 // Запуск сервера и создание окна при готовности приложения
 app.whenReady().then(() => {
+  Menu.setApplicationMenu(null)
   startBackendServer() // Сначала поднимаем бэкенд на порту 8000
   createWindow()       // Затем инициализируем графический интерфейс
 })
