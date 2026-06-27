@@ -5,10 +5,12 @@ import launch from "../assets/launch-white.png"
 import settings from "../assets/setting-white.png"
 import loading from "../assets/loading.png"
 import reduct from "../assets/reduct.png"
-import React, {useRef} from "react"
+import React, {useRef, useState} from "react"
 import useFileUpload from "../hooks/UseFileUpload"
+import SettingsGardener from "../components/SettingsGardener"
 function JuniorGardener(){
     const { fileInputRef, handleButtonClick, handleFileChange, fileName } = useFileUpload();
+    const [isSettings, setIsSettingsOpen] = useState(false);
     return (
     <div className="home">
 
@@ -19,6 +21,7 @@ function JuniorGardener(){
             </div>
 
             <input type="file"
+                className="uploadFile"
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 accept=".graphml"
@@ -34,10 +37,17 @@ function JuniorGardener(){
                 <span>Запустить</span>
             </button>
 
-            <button className="menu-item active">
-                <img src={settings} alt="settings" className="icon" />
+            <button className="menu-item active" onClick={() => setIsSettingsOpen(true)} >
+                <img src={settings} alt="settings" className="icon openSettings"/>
                 <span>Настройки</span>
             </button>
+            {isSettings && (
+                <div className="modalOverlay" onClick={() => setIsSettingsOpen(false)}>
+                    <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+                        <SettingsGardener onClose={() => setIsSettingsOpen(false)}/>
+                    </div>
+                </div>
+            )}
         </aside>
 
         <main className="content-state">
