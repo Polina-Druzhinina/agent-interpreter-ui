@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { spawn, ChildProcess } from 'node:child_process' // Импортируем spawn для управления процессами
@@ -57,7 +57,11 @@ function startBackendServer() {
   serverProcess.stderr?.on('data', (data) => {
     console.error(`[Python Server Error]: ${data.toString().trim()}`);
   });
+// Слушатель для показа нативных окон с ошибками из React-компонентов
 }
+ipcMain.on('show-error-dialog', (event, title, message) => {
+  dialog.showErrorBox(title || 'Ошибка', message || 'Произошла ошибка при выполнении операции.');
+});
 
 function createWindow() {
   win = new BrowserWindow({
