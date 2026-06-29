@@ -15,10 +15,8 @@ import { AppContext } from "../App"
 function JuniorGardener(){
     const { fileInputRef, handleButtonClick, handleFileChange} = useFileUpload();
     const [isSettings, setIsSettingsOpen] = useState(false);
-    const { weight, setWeight, height, setHeight,} = useContext(AppContext)
+    const { weight, setWeight, height, setHeight, orientation, setOrientation} = useContext(AppContext)
     const navigate = useNavigate()
-    const [robotPos, setRobotPos] = useState({x:0,y:0});
-    const [orientation, setOrientation] = useState<string>('south')
     return (
     <div className="home">
 
@@ -89,7 +87,7 @@ function JuniorGardener(){
                     </div>
                 </div>
                 <div>
-                    <MatrixBoard weight={weight} height={height}/>
+                    <MatrixBoard weight={weight} height={height} orientation={orientation}/>
                 </div>
             </div>
         </main>
