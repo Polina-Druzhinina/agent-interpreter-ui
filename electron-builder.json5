@@ -14,7 +14,7 @@
   // Инструкция для копирования Python-сервера в коробку с приложением
   "extraResources": [
     {
-      "from": "backend/dist/SMV_Server.exe",
+      "from": "backend/dist/SMV_Server.exe",  
       "to": "."
     }
   ],
