@@ -35,7 +35,7 @@ function SettingsGardener({ weight, height, orientation, setWeight, setHeight, s
 
                     <div className="field">
                         <label htmlFor="orientationM">Ориентация</label>
-                        <select id="orientationM" className="matrix" >
+                        <select id="orientationM" className="matrix" value={orientation} onChange={(e) => setOrientation(String(e.target.value))}>
                             <option value="south">Юг</option>
                             <option value="north">Север</option>
                             <option value="west">Запад</option>
