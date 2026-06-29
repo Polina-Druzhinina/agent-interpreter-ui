@@ -1,5 +1,5 @@
 import "../styles/settingsgardener.css"
-function SettingsGardener({ weight: _weight, height: _height, setWeight, setHeight, onClose }: { weight: any; height: any; setWeight: any; setHeight: any; onClose: any }) {
+function SettingsGardener({ weight, height, setWeight, setHeight, onClose }: { weight: any; height: any; setWeight: any; setHeight: any; onClose: any }) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.currentTarget as any; // Принудительно отключаем строгую проверку полей формы
