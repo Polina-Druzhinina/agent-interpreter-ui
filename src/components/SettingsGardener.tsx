@@ -1,17 +1,17 @@
 import "../styles/settingsgardener.css"
-function SettingsGardener({weight, height, setWeight, setHeight, onClose}){
-    const handleSubmit = (e) => {
+function SettingsGardener({ weight: _weight, height: _height, setWeight, setHeight, onClose }: { weight: any; height: any; setWeight: any; setHeight: any; onClose: any }) {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const form = e.target;
-        const newWidth = Number(form.widthM.value);
-        const newHeight = Number(form.heightM.value);
-        const newOrientation = form.orientation.value;
+        const form = e.currentTarget as any; // Принудительно отключаем строгую проверку полей формы
+
+        const newWidth = Number(form.widthM?.value || 0);
+        const newHeight = Number(form.heightM?.value || 0);
+
+        // Передаем измененные значения наверх в стейт
         setWeight(newWidth);
         setHeight(newHeight);
-        if(onClose){
-            onClose();
-        }
-    }
+        onClose();
+    };
     return(
         <div className="settingsWindow">
             <h3 className="nametext">Настройки</h3>

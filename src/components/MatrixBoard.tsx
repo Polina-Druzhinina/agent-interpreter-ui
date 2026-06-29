@@ -1,5 +1,5 @@
 import "../styles/matrixBoard.css"
-function MatrixBoard({weight, height}){
+function MatrixBoard({ weight, height }: { weight: any; height: any }) {
     const matrixCells: JSX.Element[] = [];
     for (let h: number = 0; h < height; h++){
         const rows: JSX.Element[] = [];

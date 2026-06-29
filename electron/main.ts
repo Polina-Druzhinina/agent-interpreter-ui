@@ -1,10 +1,9 @@
-import { app, BrowserWindow, Menu, dialog, ipcMain } from 'electron'
-import { createRequire } from 'node:module'
+import { app, BrowserWindow, Menu } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { spawn, ChildProcess } from 'node:child_process' // Импортируем spawn для управления процессами
 
-const require = createRequire(import.meta.url)
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // The built directory structure

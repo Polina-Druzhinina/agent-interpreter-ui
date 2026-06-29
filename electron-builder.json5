@@ -1,15 +1,22 @@
 // @see - https://www.electron.build/configuration/configuration
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "YourAppID",
+  "appId": "com.agent.interpreter.ui",
   "asar": true,
-  "productName": "YourAppName",
+  "productName": "Agent Interpreter UI",
   "directories": {
     "output": "release/${version}"
   },
   "files": [
     "dist",
     "dist-electron"
+  ],
+  // Инструкция для копирования Python-сервера в коробку с приложением
+  "extraResources": [
+    {
+      "from": "backend/dist/SMV_Server.exe",
+      "to": "."
+    }
   ],
   "mac": {
     "target": [
@@ -18,6 +25,7 @@
     "artifactName": "${productName}-Mac-${version}-Installer.${ext}"
   },
   "win": {
+    "icon": "public/icon-white.png", // Добавляем иконку для exe-файла
     "target": [
       {
         "target": "nsis",

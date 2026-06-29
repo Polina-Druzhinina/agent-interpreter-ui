@@ -1,42 +1,63 @@
-import React from "react";
-import { useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useState, useRef } from 'react';
 
-function UseFileUpload(){
-    const fileInputRef = useRef<HTMLInputElement>(null); //ссылка на input
-    const navigate = useNavigate()
-    const [fileName, setFileName] = React.useState("")
-    const handleButtonClick = () => { //функция, вызывающая клик по скрытому input
-        fileInputRef.current?.click();
-    };
-    const  handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = event.target.files;
-        if(files && files.length>0){
-            const selectedFile = files[0];
-            if(!selectedFile.name.endsWith(".graphml")){
-                window.ipcRenderer.send(
-                    "show-error-dialog",
-                    "Ошибка чтения",
-                    `Файл "${selectedFile.name}" не является файлом GraphML.`
-                );
-                return;
-            }
-            setFileName(selectedFile.name);
-            const formData = new FormData();
-            formData.append("file", selectedFile);
+export default function useFileUpload() {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [fileName, setFileName] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [simulationResult, setSimulationResult] = useState<any>(null); // Тут будут лежать данные от Python
 
-            fetch("http://localhost:8000/load-file", {
-            method: "POST",
-            body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-            console.log(data)
-            navigate("/junior-gardener")
-            })
-        }
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setFileName(file.name);
+    setLoading(true);
+    setError(null);
+    setSimulationResult(null);
+
+    // 1. Упаковываем файл для FastAPI
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      // 2. Отправляем запрос напрямую на запущенный Электроном Python-сервер
+      const response = await fetch('http://localhost:8000/run-file', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.status === 'success') {
+        console.log('Данные симуляции успешно получены:', data.result);
+        setSimulationResult(data.result); // Сохраняем результат симуляции
+      } else if (data.status === 'crash') {
+        console.warn('Робот врезался:', data.message);
+        setSimulationResult(data.result); // Даже при аварии сохраняем поле
+        setError(data.message);
+      } else {
+        setError(data.message || 'Ошибка сервера.');
+      }
+    } catch (err) {
+      console.error('Ошибка сети с бэкендом:', err);
+      setError('Не удалось связаться с Python-сервером. Проверьте, запущен ли он.');
+    } finally {
+      setLoading(false);
     }
-    return { fileInputRef, handleButtonClick, handleFileChange, fileName };
-}
+  };
 
-export default UseFileUpload
+  return {
+    fileInputRef,
+    handleButtonClick,
+    handleFileChange,
+    fileName,
+    loading,
+    error,
+    simulationResult, // Отдаем результат в компоненты окон
+  };
+}

@@ -6,7 +6,7 @@ import "../styles/home.css"
 import "../styles/base.css"
 import useFileUpload from "../hooks/UseFileUpload"
 function Home() {
-    const { fileInputRef, handleButtonClick, handleFileChange, fileName } = useFileUpload();
+    const { fileInputRef, handleButtonClick, handleFileChange } = useFileUpload();
     return (
     <div className="home">
         <aside className="sidebar">

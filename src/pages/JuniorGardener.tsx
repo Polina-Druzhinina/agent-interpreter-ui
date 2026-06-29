@@ -5,12 +5,12 @@ import launch from "../assets/launch-white.png"
 import settings from "../assets/setting-white.png"
 import loading from "../assets/loading.png"
 import reduct from "../assets/reduct.png"
-import React, {useRef, useState} from "react"
+import { useState } from "react"
 import useFileUpload from "../hooks/UseFileUpload"
 import SettingsGardener from "../components/SettingsGardener"
 import MatrixBoard from "../components/MatrixBoard"
 function JuniorGardener(){
-    const { fileInputRef, handleButtonClick, handleFileChange, fileName } = useFileUpload();
+    const { fileInputRef, handleButtonClick, handleFileChange} = useFileUpload();
     const [isSettings, setIsSettingsOpen] = useState(false);
     const [weight, setWeight] = useState<number>(10);
     const [height, setHeight] = useState<number>(8);
