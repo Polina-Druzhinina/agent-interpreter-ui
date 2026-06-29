@@ -8,10 +8,16 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
 dist-ssr
 *.local
 dist-electron
+
+# Игнорируем только фронтенд-билд, не трогая папки бэкенда
+/dist
+
+# Тяжёлые сборки инсталляторов Электрона
+release/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +28,17 @@ dist-electron
 *.njsproj
 *.sln
 *.sw?
+
+# Python & PyInstaller мусор
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+*.egg-info/
+.eggs/
+backend/build/
+backend/*.spec
