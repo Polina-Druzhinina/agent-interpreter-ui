@@ -3,11 +3,11 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 function UseFileUpload() {
-    const fileInputRef = useRef<HTMLInputElement>(null); // ссылка на input
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
     const [fileName, setFileName] = React.useState("");
 
-    const handleButtonClick = () => { // функция, вызывающая клик по скрытому input
+    const handleButtonClick = () => {
         fileInputRef.current?.click();
     };
 
@@ -16,8 +16,8 @@ function UseFileUpload() {
         if (files && files.length > 0) {
             const selectedFile = files[0];
             
-            // 1. Грубая проверка на расширение файла
-            if (!selectedFile.name.endsWith(".graphml")) {
+            // 1. Проверка на расширение файла (теперь неважно, капсом оно или нет)
+            if (!selectedFile.name.toLowerCase().endsWith(".graphml")) {
                 window.ipcRenderer.send(
                     "show-error-dialog",
                     "Ошибка чтения",
@@ -39,17 +39,17 @@ function UseFileUpload() {
             .then(data => {
                 console.log(data);
                 
-              //  # 3. Проверка ответа от Python-сервера
+                // 3. Проверяем, что ответил Python-сервер
                 if (data.status === "error") {
                     window.ipcRenderer.send(
                         "show-error-dialog",
                         "Ошибка валидации графа",
                         data.message || "Этот файл не содержит логику для задачи Садовника."
                     );
-                    return; // Прерываем выполнение, на страницу садовника не переходим
+                    return; // Останавливаем выполнение, никуда не переходим
                 }
                 
-                // Если всё отлично — переключаем экран
+                // Если бэкенд подтвердил Садовника — переключаем экран
                 navigate("/junior-gardener");
             })
             .catch(err => {
