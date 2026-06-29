@@ -19,6 +19,7 @@ from core.simulator import (
     Gardener,
     GardenerCrashException  # Добавили обработку крашей
 )
+from core.parser_service import extract_state_machine, MachineParseException
 
 app = FastAPI(title="State Machine Interpreter API", version="1.0.0")
 
@@ -46,19 +47,14 @@ async def load_file(file: UploadFile = File(...)):
         content = await file.read()
         xml_string = content.decode("utf-8")
 
-        parser = CGMLParser()
-        elements = parser.parse_cgml(xml_string)
-
-        if not elements.state_machines:
-            return {"status": "error", "message": "В файле не найдены автоматы (State Machines)."}
-
-        first_machine_id = list(elements.state_machines.keys())[0]
-        state_machine = elements.state_machines[first_machine_id]
+        # ИСПОЛЬЗУЕМ НАШ СЕРВИС: парсим и сразу получаем объект автомата
+        state_machine = extract_state_machine(xml_string)
+        
         platform = state_machine.platform.lower() # Получаем тип исполнителя из файла
 
         # НА ДАННОМ ЭТАПЕ: поддерживаем только Садовника
         if "gardener" not in platform:
-            return {
+            return { 
                 "status": "error",
                 "message": f"Исполнитель '{state_machine.platform}' пока не поддерживается приложением. Выберите граф для Садовника."
             }
@@ -70,10 +66,13 @@ async def load_file(file: UploadFile = File(...)):
             "name": state_machine.name,
             "statesCount": len(state_machine.states),
             "transitionsCount": len(state_machine.transitions),
-            "requiredParameters": list(state_machine.components.keys())
-        }
+            "requiredParameters": list(state_machine.components.keys()) 
+        } 
 
-    except Exception as e:
+    except MachineParseException as e:
+        # Ловим нашу кастомную ошибку, если в XML нет автоматов
+        return {"status": "error", "message": str(e)}
+    except Exception as e: 
         return {"status": "error", "message": f"Ошибка чтения XML: {str(e)}"}
 
 # =============================
