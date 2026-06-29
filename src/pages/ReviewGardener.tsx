@@ -17,6 +17,8 @@ function ReviewGardener(){
     const [isSettings, setIsSettingsOpen] = useState(false);
     const { weight, setWeight, height, setHeight } = useContext(AppContext)
     const navigate = useNavigate();
+    const [robotPos, setRobotPos] = useState({x:0,y:0});
+    const [orientation, setOrientation] = useState<string>('south')
     return (
     <div className="home">
 
@@ -52,7 +54,9 @@ function ReviewGardener(){
                     <div className="modalContent" onClick={(e) => e.stopPropagation()}>
                         <SettingsGardener
                         weight={weight}
-                        height={height} 
+                        height={height}
+                        orientation={orientation}
+                        setOrientation={setOrientation} 
                         setWeight={setWeight}
                         setHeight={setHeight}
                         onClose={() => setIsSettingsOpen(false)}/>
