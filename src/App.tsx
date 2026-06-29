@@ -8,8 +8,9 @@ export const AppContext = createContext(null)
 function App() {
   const [weight, setWeight] = useState(10)
   const [height, setHeight] = useState(8)
+  const [orientation, setOrientation] = useState('south')
   return(
-    <AppContext.Provider value={{weight, setWeight, height, setHeight}}>
+    <AppContext.Provider value={{weight, setWeight, height, setHeight, orientation, setOrientation}}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/junior-gardener" element={<JuniorGardener />} />
