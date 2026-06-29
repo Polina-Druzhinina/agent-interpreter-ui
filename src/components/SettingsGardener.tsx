@@ -1,7 +1,13 @@
 import "../styles/settingsgardener.css"
-function SettingsGardener({onClose}){
+function SettingsGardener({weight, height, setWeight, setHeight, onClose}){
     const handleSubmit = (e) => {
         e.preventDefault();
+        const form = e.target;
+        const newWidth = Number(form.widthM.value);
+        const newHeight = Number(form.heightM.value);
+        const newOrientation = form.orientation.value;
+        setWeight(newWidth);
+        setHeight(newHeight);
         if(onClose){
             onClose();
         }
@@ -18,12 +24,12 @@ function SettingsGardener({onClose}){
                 <form onSubmit={handleSubmit}>
                     <div className="field">
                         <label htmlFor="widthM">Ширина матрицы</label>
-                        <input className="matrix" type="number" id="widthM" defaultValue={8} min={1}/>
+                        <input className="matrix" type="number" id="widthM" defaultValue={10} min={1}/>
                     </div>
 
                     <div className="field">
                         <label htmlFor="heightM">Высота матрицы</label>
-                        <input className="matrix" type="number" id="heightM" defaultValue={5} min={1}/>
+                        <input className="matrix" type="number" id="heightM" defaultValue={8} min={1}/>
                     </div>
 
                     <div className="field">
