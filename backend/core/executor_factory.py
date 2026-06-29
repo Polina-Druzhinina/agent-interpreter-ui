@@ -8,7 +8,9 @@ def execute_platform(cgml_sm, parameters: dict) -> dict:
     """
     platform = cgml_sm.platform.lower()
 
-    # === 1. Junior Gardener ===
+    # ===============
+    # Junior Gardener 
+    # ===============
     if platform == "junior-gardener":
         width = parameters.get("width", 10)
         height = parameters.get("height", 8)
@@ -56,7 +58,10 @@ def execute_platform(cgml_sm, parameters: dict) -> dict:
                 }
             }
 
-    # === 2. Junior Reader ===
+    # =============
+    # Junior Reader
+    # =============
+
     elif platform == "junior-reader":
         message = parameters.get("message", "Привет, мир!")
         speed = float(parameters.get("speed", 1.0))
@@ -76,6 +81,9 @@ def execute_platform(cgml_sm, parameters: dict) -> dict:
             }
         }
 
-    # === 3. Неподдерживаемая платформа ===
+    # ==========================
+    # Неподдерживаемая платформа
+    # ==========================
+    
     else:
         return {"status": "error", "message": f"Unsupported platform: {cgml_sm.platform}"}

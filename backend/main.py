@@ -51,7 +51,7 @@ async def load_file(file: UploadFile = File(...)):
         content = await file.read()
         xml_string = content.decode("utf-8")
 
-        # ИСПОЛЬЗУЕМ НАШ СЕРВИС: парсим и сразу получаем объект автомата
+        # используем наш сервис: парсим и сразу получаем объект автомата
         state_machine = extract_state_machine(xml_string)
         
         platform = state_machine.platform.lower() # Получаем тип исполнителя из файла
@@ -60,10 +60,10 @@ async def load_file(file: UploadFile = File(...)):
         if "gardener" not in platform:
             return { 
                 "status": "error",
-                "message": f"Исполнитель '{state_machine.platform}' пока не поддерживается приложением. Выберите граф для Садовника."
+                "message": f"Исполнитель '{state_machine.platform}' пока не поддерживается приложением."
             }
 
-        # Если это Садовник — отдаем успех и всю инфу о графе
+        # Если это Садовник - отдаем успех и всю инфу о графе
         return {
             "status": "success",
             "platform": state_machine.platform,
@@ -74,7 +74,7 @@ async def load_file(file: UploadFile = File(...)):
         } 
 
     except MachineParseException as e:
-        # Ловим нашу кастомную ошибку, если в XML нет автоматов
+        # Ловим нашу ошибку, если в XML нет автоматов
         return {"status": "error", "message": str(e)}
     except Exception as e: 
         return {"status": "error", "message": f"Ошибка чтения XML: {str(e)}"}
@@ -89,10 +89,10 @@ class RunRequest(BaseModel):
 @app.post("/run")
 def run_machine(request: RunRequest):
     try:
-        # 1. Используем наш parser_service для извлечения автомата
+        # 1. Используем parser_service для извлечения автомата
         cgml_sm = extract_state_machine(request.xml)
 
-        # 2. Передаем автомат и параметры в фабрику исполнителей
+        # 2. Передаем машиу и параметры в фабрику исполнителей
         execution_result = execute_platform(cgml_sm, request.parameters)
 
         # 3. Возвращаем уже готовый чистый ответ фронтенду
@@ -107,6 +107,7 @@ def run_machine(request: RunRequest):
 # =============================
 # RUN FILE (для разработки)
 # =============================
+
 @app.post("/run-file")
 async def run_file(file: UploadFile = File(...)):
     try:
@@ -123,7 +124,7 @@ async def run_file(file: UploadFile = File(...)):
         cgml_sm = elements.state_machines[first_machine_id]
         platform = cgml_sm.platform.lower()
 
-        # По умолчанию для run-file используем Gardener 10x8
+        # По умолчанию для run-file используем Gardener 10*8
         if "gardener" in platform:
             gardener = Gardener(10, 8)
             sm = StateMachine(cgml_sm, sm_parameters={"gardener": gardener})
@@ -149,5 +150,5 @@ async def run_file(file: UploadFile = File(...)):
     
 if __name__ == "__main__":
     import uvicorn
-    # Передаем сам объект app, а не строку "main:app"
+    # Передаем сам объект app, а не строку main:app
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
