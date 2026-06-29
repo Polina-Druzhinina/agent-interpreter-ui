@@ -20,6 +20,10 @@ from core.simulator import (
     GardenerCrashException  # Добавили обработку крашей
 )
 from core.parser_service import extract_state_machine, MachineParseException
+from core.parser_service import extract_state_machine, MachineParseException
+from core.executor_factory import execute_platform
+
+
 
 app = FastAPI(title="State Machine Interpreter API", version="1.0.0")
 
@@ -85,85 +89,21 @@ class RunRequest(BaseModel):
 @app.post("/run")
 def run_machine(request: RunRequest):
     try:
-        parser = CGMLParser()
-        elements = parser.parse_cgml(request.xml)
+        # 1. Используем наш parser_service для извлечения автомата
+        cgml_sm = extract_state_machine(request.xml)
 
-        if not elements.state_machines:
-            return {"status": "error", "message": "No state machines found"}
+        # 2. Передаем автомат и параметры в фабрику исполнителей
+        execution_result = execute_platform(cgml_sm, request.parameters)
 
-        first_machine_id = list(elements.state_machines.keys())[0]
-        cgml_sm = elements.state_machines[first_machine_id]
-        platform = cgml_sm.platform.lower()
+        # 3. Возвращаем уже готовый чистый ответ фронтенду
+        return execution_result
 
-        # === 1. Junior Gardener ===
-        if platform == "junior-gardener":
-            width = request.parameters.get("width", 10)
-            height = request.parameters.get("height", 8)
-            orientation = request.parameters.get("orientation", "SOUTH")
-
-            gardener = Gardener(width, height)
-
-            if orientation.upper() == "NORTH": gardener.orientation = gardener.NORTH
-            elif orientation.upper() == "SOUTH": gardener.orientation = gardener.SOUTH
-            elif orientation.upper() == "WEST": gardener.orientation = gardener.WEST
-            elif orientation.upper() == "EAST": gardener.orientation = gardener.EAST
-
-            sm = StateMachine(cgml_sm, sm_parameters={"gardener": gardener})
-
-            # Ловим краш, чтобы сервер не падал
-            try:
-                result = run_state_machine(sm, [])
-                return {
-                    "status": "success",
-                    "result": {
-                        "timeout": result.timeout,
-                        "signals": result.signals,
-                        "calledSignals": result.called_signals,
-                        "field": gardener.field,
-                        "position": {"x": gardener.x, "y": gardener.y},
-                        "orientation": gardener.orientation
-                    }
-                }
-            except GardenerCrashException as e:
-                return {
-                    "status": "crash",
-                    "message": str(e),
-                    "result": {
-                        "timeout": False,
-                        "signals": [],
-                        "calledSignals": [],
-                        "field": gardener.field,
-                        "position": {"x": gardener.x, "y": gardener.y},
-                        "orientation": gardener.orientation
-                    }
-                }
-
-        # === 2. Junior Reader ===
-        elif platform == "junior-reader":
-            message = request.parameters.get("message", "Привет, мир!")
-            speed = float(request.parameters.get("speed", 1.0))
-
-            sm = StateMachine(cgml_sm, sm_parameters={"message": message, "speed": speed})
-            result = run_state_machine(sm, [])
-
-            return {
-                "status": "success",
-                "result": {
-                    "signals": result.signals,
-                    "calledSignals": result.called_signals,
-                    "timeout": result.timeout,
-                    "field": None,      # У Reader нет поля
-                    "position": None,   # У Reader нет позиции
-                    "orientation": None
-                }
-            }
-
-        else:
-            return {"status": "error", "message": f"Unsupported platform: {cgml_sm.platform}"}
-
+    except MachineParseException as e:
+        return {"status": "error", "message": f"Ошибка парсинга графа: {str(e)}"}
     except Exception as e:
-        return {"status": "error", "message": str(e)}
-
+        return {"status": "error", "message": f"Критическая ошибка сервера: {str(e)}"}
+    
+    
 # =============================
 # RUN FILE (для разработки)
 # =============================
