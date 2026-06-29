@@ -15,10 +15,10 @@ import { AppContext } from "../App"
 function JuniorGardener(){
     const { fileInputRef, handleButtonClick, handleFileChange} = useFileUpload();
     const [isSettings, setIsSettingsOpen] = useState(false);
-    const { weight, setWeight, height, setHeight} = useContext(AppContext)
+    const { weight, setWeight, height, setHeight,} = useContext(AppContext)
     const navigate = useNavigate()
     const [robotPos, setRobotPos] = useState({x:0,y:0});
-    const [robotOrientation, setRobotOrientation] = useState<string>('south')
+    const [orientation, setOrientation] = useState<string>('south')
     return (
     <div className="home">
 
@@ -55,6 +55,8 @@ function JuniorGardener(){
                         <SettingsGardener
                         weight={weight}
                         height={height} 
+                        orientation={orientation}
+                        setOrientation={setOrientation}
                         setWeight={setWeight}
                         setHeight={setHeight}
 
