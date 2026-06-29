@@ -1,0 +1,18 @@
+
+.matrix-row{
+    display: flex;
+}
+
+.cell {
+width: 40px;
+    height: 40px;
+    padding: 0;       
+    margin: 4px;
+    background-color: #808080;
+    cursor: pointer;   
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #FFFFFF;
+}

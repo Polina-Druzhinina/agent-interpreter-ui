@@ -1,10 +1,9 @@
-import { app, BrowserWindow, Menu, dialog, ipcMain } from 'electron'
-import { createRequire } from 'node:module'
+import { app, BrowserWindow, Menu } from 'electron'
 import { fileURLToPath } from 'node:url'
-import { Menu } from 'electron'
 import path from 'node:path'
-Menu.setApplicationMenu(null)
-const require = createRequire(import.meta.url)
+import { spawn, ChildProcess } from 'node:child_process' // Импортируем spawn для управления процессами
+
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // The built directory structure
@@ -25,12 +24,45 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 
-let win: BrowserWindow | null
+let win: BrowserWindow | null = null // Изменено на let согласно логике инициализации
+let serverProcess: ChildProcess | null = null // Переменная для хранения процесса FastAPI-сервера
+
+/**
+ * Функция автоматического запуска и контроля Python-сервера
+ */
+function startBackendServer() {
+  const isDev = !!VITE_DEV_SERVER_URL;
+
+  if (isDev) {
+    // Режим разработки: запускаем скрипт main.py в вашей папке backend через системный Python
+    const pythonCommand = process.platform === 'win32' ? 'python' : 'python3';
+    const scriptPath = path.join(process.env.APP_ROOT, 'backend', 'main.py');
+
+    console.log(`[Electron] Запуск Python-сервера разработки: ${scriptPath}`);
+    serverProcess = spawn(pythonCommand, [scriptPath]);
+  } else {
+    // Продакшн режим: запускаем именно ваш скомпилированный бинарник SMV_Server.exe
+    // При сборке приложения он будет находиться в папке resources
+    const serverExePath = path.join(process.resourcesPath, 'SMV_Server.exe');
+
+    console.log(`[Electron] Запуск бинарного файла сервера: ${serverExePath}`);
+    serverProcess = spawn(serverExePath);
+  }
+
+  // Перенаправляем логи вывода сервера в терминал Электрона для отладки
+  serverProcess.stdout?.on('data', (data) => {
+    console.log(`[Python Server Log]: ${data.toString().trim()}`);
+  });
+
+  serverProcess.stderr?.on('data', (data) => {
+    console.error(`[Python Server Error]: ${data.toString().trim()}`);
+  });
+}
 
 function createWindow() {
   win = new BrowserWindow({
-    width:1000,
-    height:600,
+    width: 1000,
+    height: 600,
     minHeight: 600,
     minWidth: 1000,
     icon: path.join(process.env.VITE_PUBLIC, 'icon-white.png'),
@@ -52,29 +84,39 @@ function createWindow() {
   }
 }
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+// ====================================================================
+// Управление жизненным циклом приложения agent-interpreter-ui
+// ====================================================================
+
+// Запуск сервера и создание окна при готовности приложения
+app.whenReady().then(() => {
+  Menu.setApplicationMenu(null)
+  startBackendServer() // Сначала поднимаем бэкенд на порту 8000
+  createWindow()       // Затем инициализируем графический интерфейс
+})
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    // Обязательно убиваем процесс сервера перед выходом,
+    // чтобы порт 8000 не оставался занятым в Windows!
+    if (serverProcess) {
+      serverProcess.kill();
+      console.log('[Electron] Процесс Python-сервера успешно остановлен.');
+    }
     app.quit()
     win = null
   }
 })
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
 })
 
-app.whenReady().then(() => {
-  Menu.setApplicationMenu(null)
-  createWindow()
-})
-
-ipcMain.on("show-error-dialog", (event, title, message) => {
-  dialog.showErrorBox(title, message)
+// Дополнительная страховка на случай закрытия приложения через консоль или диспетчер задач
+app.on('before-quit', () => {
+  if (serverProcess) {
+    serverProcess.kill();
+  }
 })
