@@ -39,7 +39,7 @@ function UseFileUpload() {
             .then(data => {
                 console.log(data);
                 
-                # 3. Проверка ответа от Python-сервера
+              //  # 3. Проверка ответа от Python-сервера
                 if (data.status === "error") {
                     window.ipcRenderer.send(
                         "show-error-dialog",
