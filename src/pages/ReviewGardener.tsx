@@ -1,24 +1,22 @@
 import "../styles/home.css"
-import "../styles/gardener.css"
+import "../styles/reviewGardener.css"
 import logo from "../assets/icon.png"
 import launch from "../assets/launch-white.png"
 import settings from "../assets/setting-white.png"
 import loading from "../assets/loading.png"
-import reduct from "../assets/reduct.png"
-import { useState } from "react"
+import preview from "../assets/preview.png"
+import React, {useRef, useState} from "react"
 import useFileUpload from "../hooks/UseFileUpload"
 import SettingsGardener from "../components/SettingsGardener"
 import MatrixBoard from "../components/MatrixBoard"
 import { useNavigate } from "react-router-dom"
 import { useContext } from "react"
 import { AppContext } from "../App"
-function JuniorGardener(){
+function ReviewGardener(){
     const { fileInputRef, handleButtonClick, handleFileChange} = useFileUpload();
     const [isSettings, setIsSettingsOpen] = useState(false);
-    const { weight, setWeight, height, setHeight} = useContext(AppContext)
-    const navigate = useNavigate()
-    const [robotPos, setRobotPos] = useState({x:0,y:0});
-    const [robotOrientation, setRobotOrientation] = useState<string>('south')
+    const { weight, setWeight, height, setHeight } = useContext(AppContext)
+    const navigate = useNavigate();
     return (
     <div className="home">
 
@@ -57,7 +55,6 @@ function JuniorGardener(){
                         height={height} 
                         setWeight={setWeight}
                         setHeight={setHeight}
-
                         onClose={() => setIsSettingsOpen(false)}/>
                     </div>
                 </div>
@@ -80,9 +77,9 @@ function JuniorGardener(){
                     </div>
 
                     <div className="button-reduct">
-                        <button onClick={() => navigate("/preview")}>
-                            <img src={reduct} alt="reduct" className="icon-reduct"/>
-                            <span>Режим редактирования</span>
+                        <button onClick={()  => navigate("/junior-gardener")}>
+                            <img src={preview} alt="preview" className="iconPreview"/>
+                            <span>Режим просмотра</span>
                         </button>
                     </div>
                 </div>
@@ -90,9 +87,28 @@ function JuniorGardener(){
                     <MatrixBoard weight={weight} height={height}/>
                 </div>
             </div>
+
+            <div className="tool">
+                <div className="toolSelection">
+                    <label className="nameTools" htmlFor="tools">Инструмент</label>
+                    <select id="tools" className="boxTools">
+                        <option value="emptiness">Пустота(0)</option>
+                        <option value="wall">Стена(-1)</option>
+                        <option value="rose">Роза(1)</option>
+                        <option value="mint">Мята(2)</option>
+                        <option value="cornflower">Василек(3)</option>
+                    </select>
+                </div>
+
+                <div className="btn-clearningField">
+                    <button className="clear">Очистить поле</button>
+                </div>
+
+            </div>
+
         </main>
     </div>
   )
 }
 
-export default JuniorGardener
+export default ReviewGardener
