@@ -8,9 +8,12 @@ import reduct from "../assets/reduct.png"
 import React, {useRef, useState} from "react"
 import useFileUpload from "../hooks/UseFileUpload"
 import SettingsGardener from "../components/SettingsGardener"
+import MatrixBoard from "../components/MatrixBoard"
 function JuniorGardener(){
     const { fileInputRef, handleButtonClick, handleFileChange, fileName } = useFileUpload();
     const [isSettings, setIsSettingsOpen] = useState(false);
+    const [weight, setWeight] = useState<number>(10);
+    const [height, setHeight] = useState<number>(8);
     return (
     <div className="home">
 
@@ -44,7 +47,12 @@ function JuniorGardener(){
             {isSettings && (
                 <div className="modalOverlay" onClick={() => setIsSettingsOpen(false)}>
                     <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-                        <SettingsGardener onClose={() => setIsSettingsOpen(false)}/>
+                        <SettingsGardener
+                        weight={weight}
+                        height={height} 
+                        setWeight={setWeight}
+                        setHeight={setHeight}
+                        onClose={() => setIsSettingsOpen(false)}/>
                     </div>
                 </div>
             )}
@@ -71,7 +79,9 @@ function JuniorGardener(){
                             <span>Режим редактирования</span>
                         </button>
                     </div>
-
+                </div>
+                <div>
+                    <MatrixBoard weight={weight} height={height}/>
                 </div>
             </div>
         </main>
