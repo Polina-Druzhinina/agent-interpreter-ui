@@ -50,11 +50,20 @@ async def load_file(file: UploadFile = File(...)):
         elements = parser.parse_cgml(xml_string)
 
         if not elements.state_machines:
-            return {"status": "error", "message": "No state machines found"}
+            return {"status": "error", "message": "В файле не найдены автоматы (State Machines)."}
 
         first_machine_id = list(elements.state_machines.keys())[0]
         state_machine = elements.state_machines[first_machine_id]
+        platform = state_machine.platform.lower() # Получаем тип исполнителя из файла
 
+        # НА ДАННОМ ЭТАПЕ: поддерживаем только Садовника
+        if "gardener" not in platform:
+            return {
+                "status": "error",
+                "message": f"Исполнитель '{state_machine.platform}' пока не поддерживается приложением. Выберите граф для Садовника."
+            }
+
+        # Если это Садовник — отдаем успех и всю инфу о графе
         return {
             "status": "success",
             "platform": state_machine.platform,
@@ -65,7 +74,7 @@ async def load_file(file: UploadFile = File(...)):
         }
 
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        return {"status": "error", "message": f"Ошибка чтения XML: {str(e)}"}
 
 # =============================
 # RUN (через JSON)
