@@ -1,15 +1,16 @@
 import "../styles/settingsgardener.css"
-function SettingsGardener({ weight, height, setWeight, setHeight, onClose }: { weight: any; height: any; setWeight: any; setHeight: any; onClose: any }) {
+function SettingsGardener({ weight, height, orientation, setWeight, setHeight, setOrientation, onClose }: { weight: any; height: any; orientation:any; setWeight: any; setHeight: any; setOrientation:any; onClose: any }) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.currentTarget as any; // Принудительно отключаем строгую проверку полей формы
 
-        const newWidth = Number(form.widthM?.value || 0);
-        const newHeight = Number(form.heightM?.value || 0);
-
+        const newWidth = Number(form.widthM.value);
+        const newHeight = Number(form.heightM.value);
+        const newOrientation = String(form.orientationM.value)
         // Передаем измененные значения наверх в стейт
         setWeight(newWidth);
         setHeight(newHeight);
+        setOrientation(newOrientation);
         onClose();
     };
     return(
@@ -33,8 +34,8 @@ function SettingsGardener({ weight, height, setWeight, setHeight, onClose }: { w
                     </div>
 
                     <div className="field">
-                        <label htmlFor="orientation">Ориентация</label>
-                        <select id="orientation" className="matrix">
+                        <label htmlFor="orientationM">Ориентация</label>
+                        <select id="orientationM" className="matrix" value={orientation} onChange={(e) => setOrientation(String(e.target.value))}>
                             <option value="south">Юг</option>
                             <option value="north">Север</option>
                             <option value="west">Запад</option>
