@@ -24,12 +24,12 @@ function SettingsGardener({weight, height, setWeight, setHeight, onClose}){
                 <form onSubmit={handleSubmit}>
                     <div className="field">
                         <label htmlFor="widthM">Ширина матрицы</label>
-                        <input className="matrix" type="number" id="widthM" defaultValue={10} min={1}/>
+                        <input className="matrix" type="number" id="widthM" value={weight} min={1} onChange={(e) => setWeight(Number(e.target.value))}/>
                     </div>
 
                     <div className="field">
                         <label htmlFor="heightM">Высота матрицы</label>
-                        <input className="matrix" type="number" id="heightM" defaultValue={8} min={1}/>
+                        <input className="matrix" type="number" id="heightM" value={height} min={1} onChange={(e) => setHeight(Number(e.target.value))}/>
                     </div>
 
                     <div className="field">

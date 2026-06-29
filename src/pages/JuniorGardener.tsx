@@ -9,11 +9,16 @@ import React, {useRef, useState} from "react"
 import useFileUpload from "../hooks/UseFileUpload"
 import SettingsGardener from "../components/SettingsGardener"
 import MatrixBoard from "../components/MatrixBoard"
+import { useNavigate } from "react-router-dom"
+import { useContext } from "react"
+import { AppContext } from "../App"
 function JuniorGardener(){
     const { fileInputRef, handleButtonClick, handleFileChange, fileName } = useFileUpload();
     const [isSettings, setIsSettingsOpen] = useState(false);
-    const [weight, setWeight] = useState<number>(10);
-    const [height, setHeight] = useState<number>(8);
+    const { weight, setWeight, height, setHeight} = useContext(AppContext)
+    const navigate = useNavigate()
+    const [robotPos, setRobotPos] = useState({x:0,y:0});
+    const [robotOrientation, setRobotOrientation] = useState<string>('south')
     return (
     <div className="home">
 
@@ -52,6 +57,7 @@ function JuniorGardener(){
                         height={height} 
                         setWeight={setWeight}
                         setHeight={setHeight}
+
                         onClose={() => setIsSettingsOpen(false)}/>
                     </div>
                 </div>
@@ -74,7 +80,7 @@ function JuniorGardener(){
                     </div>
 
                     <div className="button-reduct">
-                        <button>
+                        <button onClick={() => navigate("/preview")}>
                             <img src={reduct} alt="reduct" className="icon-reduct"/>
                             <span>Режим редактирования</span>
                         </button>
