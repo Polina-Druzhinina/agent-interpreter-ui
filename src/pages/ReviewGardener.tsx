@@ -5,7 +5,7 @@ import launch from "../assets/launch-white.png"
 import settings from "../assets/setting-white.png"
 import loading from "../assets/loading.png"
 import preview from "../assets/preview.png"
-import React, {useRef, useState} from "react"
+import { useState } from "react"
 import useFileUpload from "../hooks/UseFileUpload"
 import SettingsGardener from "../components/SettingsGardener"
 import MatrixBoard from "../components/MatrixBoard"
@@ -15,8 +15,14 @@ import { AppContext } from "../App"
 function ReviewGardener(){
     const { fileInputRef, handleButtonClick, handleFileChange} = useFileUpload();
     const [isSettings, setIsSettingsOpen] = useState(false);
-    const { weight, setWeight, height, setHeight, orientation, setOrientation} = useContext(AppContext)
+    const { weight, setWeight, height, setHeight, orientation, setOrientation, matrix, setMatrix} = useContext(AppContext)
     const navigate = useNavigate();
+    const [selectedTool, setSelectedTool] = useState('emptiness');
+    const handleCellClick = (h: number, w: number) => {
+        const newMatrix = matrix.map(row => [...row]);
+        newMatrix[h][w] = selectedTool;
+        setMatrix(newMatrix);
+    }
     return (
     <div className="home">
 
@@ -86,14 +92,14 @@ function ReviewGardener(){
                     </div>
                 </div>
                 <div>
-                    <MatrixBoard weight={weight} height={height} orientation={orientation}/>
+                    <MatrixBoard weight={weight} height={height} orientation={orientation} matrix={matrix} onCellClick={handleCellClick}/>
                 </div>
             </div>
 
             <div className="tool">
                 <div className="toolSelection">
                     <label className="nameTools" htmlFor="tools">Инструмент</label>
-                    <select id="tools" className="boxTools">
+                    <select id="tools" className="boxTools" value={selectedTool} onChange={(e) => setSelectedTool(e.target.value)}>
                         <option value="emptiness">Пустота(0)</option>
                         <option value="wall">Стена(-1)</option>
                         <option value="rose">Роза(1)</option>
@@ -102,7 +108,7 @@ function ReviewGardener(){
                     </select>
                 </div>
 
-                <div className="btn-clearningField">
+                <div className="btn-clearningField" onClick={() => {setMatrix(Array.from({ length: height }, () => Array(weight).fill('emptiness')));}}>
                     <button className="clear">Очистить поле</button>
                 </div>
 
