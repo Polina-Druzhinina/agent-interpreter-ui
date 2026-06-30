@@ -1,11 +1,10 @@
 from core.simulator import StateMachine, run_state_machine, Gardener, GardenerCrashException
 
 def execute_platform(cgml_sm, parameters: dict) -> dict:
-    """
-    Фабрика исполнителей. Инициализирует нужную платформу (Gardener или Reader)
-    с переданными параметрами, запускает машину состояний и возвращает
-    унифицированный ответ для фронтенда.
-    """
+    
+    #Фабрика исполнителей. Инициализирует нужную платформу (Gardener или Reader на данном этапе)
+    #с переданными параметрами, запускает машину состояний и возвращает
+    #ответ для фронта
     platform = cgml_sm.platform.lower()
 
     # ===============
@@ -63,7 +62,7 @@ def execute_platform(cgml_sm, parameters: dict) -> dict:
     # =============
 
     elif platform == "junior-reader":
-        message = parameters.get("message", "Привет, мир!")
+        message = parameters.get("message", "Привет")
         speed = float(parameters.get("speed", 1.0))
 
         sm = StateMachine(cgml_sm, sm_parameters={"message": message, "speed": speed})
@@ -75,7 +74,7 @@ def execute_platform(cgml_sm, parameters: dict) -> dict:
                 "signals": result.signals,
                 "calledSignals": result.called_signals,
                 "timeout": result.timeout,
-                "field": None,      # У Reader нет поля
+                "field": None,      # У Reder нет поля
                 "position": None,   # У Reader нет позиции
                 "orientation": None
             }
@@ -84,6 +83,6 @@ def execute_platform(cgml_sm, parameters: dict) -> dict:
     # ==========================
     # Неподдерживаемая платформа
     # ==========================
-    
+
     else:
         return {"status": "error", "message": f"Unsupported platform: {cgml_sm.platform}"}
