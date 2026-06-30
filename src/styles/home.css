@@ -1,8 +1,8 @@
 .home{
     display: flex;
     margin: 0;
-    border: 2px solid black;
-    align-items: center;
+    height: 100hv;
+    overflow: hidden;
 }
 
 
