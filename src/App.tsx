@@ -4,6 +4,7 @@ import JuniorGardener from "./pages/JuniorGardener";
 import "./styles/app.css"
 import ReviewGardener from "./pages/ReviewGardener";
 import { createContext, useState, useEffect } from "react";
+import LaunchGardener from "./pages/LaunchGardener";
 export const AppContext = createContext(null)
 function App() {
   const [weight, setWeight] = useState(10)
@@ -23,6 +24,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/junior-gardener" element={<JuniorGardener />} />
         <Route path="/preview" element={<ReviewGardener />}/>
+        <Route path="/launch" element={<LaunchGardener />}/>
       </Routes>
     </AppContext.Provider>
   );
