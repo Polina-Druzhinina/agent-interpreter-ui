@@ -1,9 +1,9 @@
 import sys
 import os
 
-# Фикс для PyInstaller: добавляем временную папку распаковки в пути поиска
+# (для PyInstaller) добавляем временную папку распаковки в пути поиска
 if getattr(sys, 'frozen', False):
-    # Если запущен как .exe
+    # Если запущен как экзешник
     application_path = sys._MEIPASS
     sys.path.insert(0, application_path)
 
