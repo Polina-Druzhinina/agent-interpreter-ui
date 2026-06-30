@@ -11,11 +11,11 @@ import SettingsGardener from "../components/SettingsGardener"
 import MatrixBoard from "../components/MatrixBoard"
 import { useNavigate } from "react-router-dom"
 import { useContext } from "react"
-import { AppContext } from "../App"
+import { AppContext} from "../App"
 function JuniorGardener(){
     const { fileInputRef, handleButtonClick, handleFileChange} = useFileUpload();
     const [isSettings, setIsSettingsOpen] = useState(false);
-    const { weight, setWeight, height, setHeight, orientation, setOrientation} = useContext(AppContext)
+    const { weight, setWeight, height, setHeight, orientation, setOrientation, matrix} = useContext(AppContext)
     const navigate = useNavigate()
     return (
     <div className="home">
@@ -87,7 +87,7 @@ function JuniorGardener(){
                     </div>
                 </div>
                 <div>
-                    <MatrixBoard weight={weight} height={height} orientation={orientation}/>
+                    <MatrixBoard weight={weight} height={height} orientation={orientation} matrix={matrix}/>
                 </div>
             </div>
         </main>

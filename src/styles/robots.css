@@ -1,0 +1,19 @@
+.cell.emptiness{
+    background-color: #808080;
+}
+
+.cell.wall{
+    background-color: #36454F;
+}
+
+.cell.rose{
+    background-color: #E0115F;
+}
+
+.cell.mint{
+    background-color: #3EB489;
+}
+
+.cell.cornflower{
+    background-color: #6495ED;
+}

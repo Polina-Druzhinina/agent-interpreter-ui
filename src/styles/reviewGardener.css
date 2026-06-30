@@ -1,7 +1,7 @@
 .content-state{
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100%;
     flex: 1;
     gap: 10px;
     width: 100%;
@@ -95,6 +95,7 @@ button{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: auto;
 }
 
 .toolSelection{
