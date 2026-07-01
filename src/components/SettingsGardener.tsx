@@ -1,4 +1,15 @@
 import "../styles/settingsgardener.css";
+
+interface SettingsGardenerProps {
+	width: number;
+	height: number;
+	orientation: string;
+	setWidth: (v: number) => void;
+	setHeight: (v: number) => void;
+	setOrientation: (v: string) => void;
+	onClose: () => void;
+}
+
 function SettingsGardener({
 	width,
 	height,
@@ -7,15 +18,7 @@ function SettingsGardener({
 	setHeight,
 	setOrientation,
 	onClose,
-}: {
-	width: number;
-	height: number;
-	orientation: string;
-	setWidth: (v: number) => void;
-	setHeight: (v: number) => void;
-	setOrientation: (v: string) => void;
-	onClose: () => void;
-}) {
+}: SettingsGardenerProps) {
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const form = e.currentTarget as HTMLFormElement;

@@ -1,18 +1,14 @@
 import "../styles/matrixBoard.css";
 import "../styles/robots.css";
-function MatrixBoard({
-	width,
-	height,
-	orientation,
-	matrix,
-	onCellClick,
-}: {
+interface MatrixBoardProps {
 	width: number;
 	height: number;
 	orientation: string;
 	matrix: string[][];
 	onCellClick?: (h: number, w: number) => void;
-}) {
+}
+function MatrixBoard({ width, height, orientation, matrix, onCellClick }: MatrixBoardProps) {
+	
 	const toolValues: Record<string, number> = {
 		emptiness: 0,
 		wall: -1,
