@@ -1,6 +1,4 @@
-import { useState, useContext } from "react";
-import { AppContext } from "../App";
-import UseFileUpload from "../hooks/UseFileUpload";
+import { useState } from "react";
 import SettingsGardener from "./SettingsGardener";
 import logo from "../assets/icon.png";
 import launchWhite from "../assets/launch-white.png";
@@ -8,21 +6,34 @@ import launchGray from "../assets/launch-gray.png";
 import settingWhite from "../assets/setting-white.png";
 import settingGray from "../assets/setting-gray.png";
 import loading from "../assets/loading.png";
+import useFileUpload from "../hooks/useFileUpload";
+
+interface SidebarProps {
+	launchDisabled?: boolean;
+	settingsDisabled?: boolean;
+	onLaunchClick?: () => void;
+	width?: number;
+	height?: number;
+	orientation?: string;
+	setWidth?: (v: number) => void;
+	setHeight?: (v: number) => void;
+	setOrientation?: (v: string) => void;
+}
 
 function Sidebar({
 	launchDisabled,
 	settingsDisabled,
 	onLaunchClick,
-}: {
-	launchDisabled?: boolean;
-	settingsDisabled?: boolean;
-	onLaunchClick?: () => void;
-}) {
+	width,
+	height,
+	orientation,
+	setWidth,
+	setHeight,
+	setOrientation,
+}: SidebarProps) {
 	const { fileInputRef, handleButtonClick, handleFileChange, error, clearError } =
-		UseFileUpload();
+		useFileUpload();
 	const [isSettings, setIsSettingsOpen] = useState(false);
-	const { width, setWidth, height, setHeight, orientation, setOrientation } =
-		useContext(AppContext);
 
 	return (
 		<aside className="sidebar">
@@ -33,7 +44,7 @@ function Sidebar({
 			<input
 				type="file"
 				className="uploadFile"
-				ref={fileInputRef} 
+				ref={fileInputRef}
 				onChange={handleFileChange}
 				accept=".graphml"
 			/>
@@ -71,17 +82,18 @@ function Sidebar({
 				<div className="modalOverlay" onClick={() => setIsSettingsOpen(false)}>
 					<div className="modalContent" onClick={(e) => e.stopPropagation()}>
 						<SettingsGardener
-							width={width}
-							height={height}
-							orientation={orientation}
-							setOrientation={setOrientation}
-							setWidth={setWidth}
-							setHeight={setHeight}
+							width={width ?? 10}
+							height={height ?? 8}
+							orientation={orientation ?? "south"}
+							setWidth={setWidth ?? (() => {})}
+							setHeight={setHeight ?? (() => {})}
+							setOrientation={setOrientation ?? (() => {})}
 							onClose={() => setIsSettingsOpen(false)}
 						/>
 					</div>
 				</div>
 			)}
+
 			{error && (
 				<div className="modalOverlay" onClick={clearError}>
 					<div className="settingsWindow" onClick={(e) => e.stopPropagation()}>
