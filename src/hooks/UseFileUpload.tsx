@@ -2,7 +2,7 @@ import React from "react";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function UseFileUpload() {
+function useFileUpload() {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const navigate = useNavigate();
 	const [fileName, setFileName] = React.useState("");
@@ -45,7 +45,7 @@ function UseFileUpload() {
 						});
 						return;
 					}
-					if(data.platform){
+					if (data.platform) {
 						navigate(`/${data.platform}`);
 					}
 				})
@@ -53,7 +53,7 @@ function UseFileUpload() {
 					console.error("Ошибка при загрузке файла:", err);
 					setError({
 						title: "Ошибка сети",
-						message: "Не удалось связаться с бэкенд-сервером."
+						message: "Не удалось связаться с бэкенд-сервером.",
 					});
 				});
 		}
@@ -62,4 +62,4 @@ function UseFileUpload() {
 	return { fileInputRef, handleButtonClick, handleFileChange, fileName, error, clearError };
 }
 
-export default UseFileUpload;
+export default useFileUpload;
