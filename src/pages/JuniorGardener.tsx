@@ -4,14 +4,12 @@ import reduct from "../assets/reduct.png";
 import MatrixBoard from "../components/MatrixBoard";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AppContext } from "../App";
-function JuniorGardener() {
-	const { width, height, orientation, matrix } = useContext(AppContext);
+import {GardenerProps} from "../hooks/useGardener"
+function JuniorGardener({ width, height, orientation, matrix, setWidth, setHeight, setOrientation }: GardenerProps) {
 	const navigate = useNavigate();
 	return (
 		<div className="home">
-			<Sidebar onLaunchClick={() => {}} />
+			<Sidebar onLaunchClick={() => {}} width={width} height={height} orientation={orientation} setWidth={setWidth} setHeight={setHeight} setOrientation={setOrientation} />
 
 			<main className="content-state">
 				<div className="car-state">Машина состояний: Junior Gardener</div>

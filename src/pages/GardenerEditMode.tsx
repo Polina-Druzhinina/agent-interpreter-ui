@@ -5,10 +5,8 @@ import { useState } from "react";
 import MatrixBoard from "../components/MatrixBoard";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AppContext } from "../App";
-function GardenerEditMode() {
-	const { width, height, orientation, matrix, setMatrix } = useContext(AppContext);
+import {GardenerProps} from "../hooks/useGardener"
+function GardenerEditMode({ width, height, orientation, matrix, setMatrix, setWidth, setHeight, setOrientation }: GardenerProps) {
 	const navigate = useNavigate();
 	const [selectedTool, setSelectedTool] = useState("emptiness");
 	const handleCellClick = (h: number, w: number) => {
@@ -18,7 +16,7 @@ function GardenerEditMode() {
 	};
 	return (
 		<div className="home">
-			<Sidebar onLaunchClick={() => {}} />
+			<Sidebar onLaunchClick={() => {}} width={width} height={height} orientation={orientation} setWidth={setWidth} setHeight={setHeight} setOrientation={setOrientation} />
 
 			<main className="content-state">
 				<div className="car-state">Машина состояний: Junior Gardener</div>
