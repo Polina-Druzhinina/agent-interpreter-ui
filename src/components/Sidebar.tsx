@@ -18,7 +18,8 @@ function Sidebar({
 	settingsDisabled?: boolean;
 	onLaunchClick?: () => void;
 }) {
-	const { fileInputRef, handleButtonClick, handleFileChange } = UseFileUpload();
+	const { fileInputRef, handleButtonClick, handleFileChange, error, clearError } =
+		UseFileUpload();
 	const [isSettings, setIsSettingsOpen] = useState(false);
 	const { width, setWidth, height, setHeight, orientation, setOrientation } =
 		useContext(AppContext);
@@ -32,7 +33,7 @@ function Sidebar({
 			<input
 				type="file"
 				className="uploadFile"
-				ref={fileInputRef}
+				ref={fileInputRef} 
 				onChange={handleFileChange}
 				accept=".graphml"
 			/>
@@ -78,6 +79,27 @@ function Sidebar({
 							setHeight={setHeight}
 							onClose={() => setIsSettingsOpen(false)}
 						/>
+					</div>
+				</div>
+			)}
+			{error && (
+				<div className="modalOverlay" onClick={clearError}>
+					<div className="settingsWindow" onClick={(e) => e.stopPropagation()}>
+						<h3 className="nametext">{error.title}</h3>
+						<hr className="line" />
+						<div className="settings">
+							<form onSubmit={(e) => e.preventDefault()}>
+								<div
+									className="table-header"
+									style={{ justifyContent: "center", textAlign: "center" }}
+								>
+									<p>{error.message}</p>
+								</div>
+								<button className="save" onClick={clearError}>
+									Понятно
+								</button>
+							</form>
+						</div>
 					</div>
 				</div>
 			)}
