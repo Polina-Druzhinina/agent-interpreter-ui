@@ -9,8 +9,7 @@ import loading from "../assets/loading.png";
 import useFileUpload from "../hooks/useFileUpload";
 
 interface SidebarProps {
-	launchDisabled?: boolean;
-	settingsDisabled?: boolean;
+	readonly?: boolean;
 	onLaunchClick?: () => void;
 	width?: number;
 	height?: number;
@@ -21,8 +20,7 @@ interface SidebarProps {
 }
 
 function Sidebar({
-	launchDisabled,
-	settingsDisabled,
+	readonly,
 	onLaunchClick,
 	width,
 	height,
@@ -55,11 +53,11 @@ function Sidebar({
 			</button>
 
 			<button
-				className={`menu-item ${launchDisabled ? "disabled" : "active"}`}
-				onClick={launchDisabled ? undefined : onLaunchClick}
+				className={`menu-item ${readonly ? "disabled" : "active"}`}
+				onClick={readonly ? undefined : onLaunchClick}
 			>
 				<img
-					src={launchDisabled ? launchGray : launchWhite}
+					src={readonly ? launchGray : launchWhite}
 					alt="launch"
 					className="icon"
 				/>
@@ -67,18 +65,18 @@ function Sidebar({
 			</button>
 
 			<button
-				className={`menu-item ${settingsDisabled ? "disabled" : "active"}`}
-				onClick={settingsDisabled ? undefined : () => setIsSettingsOpen(true)}
+				className={`menu-item ${readonly ? "disabled" : "active"}`}
+				onClick={readonly ? undefined : () => setIsSettingsOpen(true)}
 			>
 				<img
-					src={settingsDisabled ? settingGray : settingWhite}
+					src={readonly ? settingGray : settingWhite}
 					alt="settings"
 					className="icon"
 				/>
 				<span>Настройки</span>
 			</button>
 
-			{!settingsDisabled && isSettings && (
+			{!readonly && isSettings && (
 				<div className="modalOverlay" onClick={() => setIsSettingsOpen(false)}>
 					<div className="modalContent" onClick={(e) => e.stopPropagation()}>
 						<SettingsGardener

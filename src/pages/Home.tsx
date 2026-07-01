@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 function Home() {
 	return (
 		<div className="home">
-			<Sidebar launchDisabled settingsDisabled />
+			<Sidebar readonly />
 			<main className="content">
 				<div className="message">Загрузите GraphML файл для начала работы</div>
 			</main>
