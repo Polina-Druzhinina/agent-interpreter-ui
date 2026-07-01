@@ -7,7 +7,7 @@ import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AppContext } from "../App";
-function ReviewGardener() {
+function GardenerEditMode() {
 	const { width, height, orientation, matrix, setMatrix } = useContext(AppContext);
 	const navigate = useNavigate();
 	const [selectedTool, setSelectedTool] = useState("emptiness");
@@ -86,4 +86,4 @@ function ReviewGardener() {
 	);
 }
 
-export default ReviewGardener;
+export default GardenerEditMode;
