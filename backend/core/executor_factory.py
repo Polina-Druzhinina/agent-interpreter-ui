@@ -1,4 +1,4 @@
-from core.simulator import StateMachine, run_state_machine, Gardener, GardenerCrashException
+from core.simulator import StateMachine, run_state_machine, Gardener, GardenerCrashException, set_step_saver
 
 def execute_platform(cgml_sm, parameters: dict) -> dict:
     
@@ -23,17 +23,15 @@ def execute_platform(cgml_sm, parameters: dict) -> dict:
             gardener.field = [row[:] for row in custom_field]
 
         # Настраиваем ориентацию робота
-        orientation_map = {
-            "NORTH": gardener.NORTH,
-            "SOUTH": gardener.SOUTH,
-            "WEST": gardener.WEST,
-            "EAST": gardener.EAST
-        }
-        gardener.orientation = orientation_map.get(orientation.upper(), gardener.SOUTH)
-
-        # Массив для пошаговой трассировки
-        steps_history = []
-
+        if orientation.upper() == "NORTH":
+            gardener.orientation = gardener.NORTH
+        elif orientation.upper() == "WEST":
+            gardener.orientation = gardener.WEST
+        elif orientation.upper() == "EAST":
+            gardener.orientation = gardener.EAST
+        else:
+            gardener.orientation = gardener.SOUTH
+        
         # Перевод направления в строковый формат для фронта
         def get_orientation_str(o):
             orientation_names = {
@@ -44,6 +42,9 @@ def execute_platform(cgml_sm, parameters: dict) -> dict:
             }
             return orientation_names.get(o, "south")
 
+        # Массив для пошаговой трассировки
+        steps_history = []
+
         # Фиксация текущего положения робота и копирование матрицы поля
         def save_current_step():
             steps_history.append({
@@ -52,54 +53,14 @@ def execute_platform(cgml_sm, parameters: dict) -> dict:
                 "field": [row[:] for row in gardener.field]
             })
 
+        
+        # Передаём коллбэк в декоратор
+        set_step_saver(save_current_step)
+
         # Создаём машину состояний
         sm = StateMachine(cgml_sm, sm_parameters={"gardener": gardener})
 
-        # Находим компонент Mover и патчим его методы для записи истории шагов
-        mover_component = None
-        for comp_id, comp in sm.components.items():
-            if comp.type == "Mover":
-                mover_component = comp.obj
-                break
-
-        if mover_component:
-            # Сохраняем оригинальные методы
-            original_move_forward = mover_component.move_forward
-            original_move_backward = mover_component.move_backward
-            original_turn_left = mover_component.turn_left
-            original_turn_right = mover_component.turn_right
-
-            # Патчим move_forward
-            def patched_move_forward():
-                save_current_step()  # Сохраняем состояние перед движением
-                original_move_forward()
-                save_current_step()  # Сохраняем состояние после движения
-
-            # Патчим move_backward
-            def patched_move_backward():
-                save_current_step()
-                original_move_backward()
-                save_current_step()
-
-            # Патчим turn_left
-            def patched_turn_left():
-                save_current_step()
-                original_turn_left()
-                save_current_step()
-
-            # Патчим turn_right
-            def patched_turn_right():
-                save_current_step()
-                original_turn_right()
-                save_current_step()
-
-            # Заменяем методы
-            mover_component.move_forward = patched_move_forward
-            mover_component.move_backward = patched_move_backward
-            mover_component.turn_left = patched_turn_left
-            mover_component.turn_right = patched_turn_right
-
-        # Сохраняем стартовую точку перед началом движения
+         # Сохраняем стартовую точку перед ходом
         save_current_step()
 
         # Запускаем симуляцию и ловим краши
@@ -125,6 +86,9 @@ def execute_platform(cgml_sm, parameters: dict) -> dict:
                     "calledSignals": []
                 }
             }
+        finally:
+            # Сбрасываем коллбэк после завершения
+            set_step_saver(None)
 
     # =============
     # Junior Reader

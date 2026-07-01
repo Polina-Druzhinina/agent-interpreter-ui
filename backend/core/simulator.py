@@ -17,6 +17,31 @@ import time
 import sys
 import re
 
+_step_saver = None
+
+def set_step_saver(func):
+    #Устанавливает функцию сохранения шага (вызывается из executor_factory)
+    global _step_saver
+    _step_saver = func
+
+def gardener_history(func):
+    #Декоратор сохраняет состояние робота до и после вызова Mover
+    def wrapper(*args, **kwargs):
+        # args[0] - self 
+        gardener = args[0].gardener if args else None
+        
+        if gardener and _step_saver is not None:
+            _step_saver()  # Снимок до
+        
+        result = func(*args, **kwargs)
+        
+        if gardener and _step_saver is not None:
+            _step_saver()  # снимок послк
+        
+        return result
+    wrapper.__name__ = func.__name__
+    return wrapper
+
 # ============================================================================
 # UTILS.PY
 # ============================================================================
@@ -1125,7 +1150,8 @@ class Mover(SchemeComponent):
             raise ValueError('Gardener is None!')
 
         self.gardener = gardener
-
+    
+    @gardener_history
     def move_forward(self):
         if self.gardener is None:
             raise ValueError('Gardener is None!')
@@ -1149,6 +1175,7 @@ class Mover(SchemeComponent):
         else:
             raise GardenerCrashException('Crash: out of bounds!')
 
+    @gardener_history
     def move_backward(self):
         if self.gardener is None:
             raise ValueError('Gardener is None!')
