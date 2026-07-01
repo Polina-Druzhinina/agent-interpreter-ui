@@ -21,14 +21,6 @@ function SettingsGardener({
 }: SettingsGardenerProps) {
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const form = e.currentTarget as HTMLFormElement;
-		const formData = new FormData(form);
-		const newWidth = Number(formData.get("widthM"));
-		const newHeight = Number(formData.get("heightM"));
-		const newOrientation = String(formData.get("orientationM"));
-		setWidth(newWidth);
-		setHeight(newHeight);
-		setOrientation(newOrientation);
 		onClose();
 	};
 	return (
