@@ -1,97 +1,97 @@
-.content-state{
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    gap: 10px;
-    width: 100%;
+.content-state {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	gap: 10px;
+	width: 100%;
 }
 
-.car-state{
-    color: #0A3963;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
+.car-state {
+	color: #0a3963;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
 }
 
-.fsm-meta{
-    height: 85%;
-    background-color: #EFEFEF;
-    padding: 10px;
+.fsm-meta {
+	height: 85%;
+	background-color: #efefef;
+	padding: 10px;
 }
 
-.meta-header{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between; 
-    align-items: flex-start;
-    width: 100%;
-    margin-bottom: 15px;
+.meta-header {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-start;
+	width: 100%;
+	margin-bottom: 15px;
 }
 
-.description{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.description {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
 }
 
-.description span{
-    font-size: 16px;
-    color: #2B3641;
-    font-weight: bold;
+.description span {
+	font-size: 16px;
+	color: #2b3641;
+	font-weight: bold;
 }
 
-button{
-    background-color: #7FB5FF;
-    border: none;
-    color: #FFFFFF;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;     
-    justify-content: center;     
-    gap: 8px;               
-    cursor: pointer;
+button {
+	background-color: #7fb5ff;
+	border: none;
+	color: #ffffff;
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	cursor: pointer;
 }
 
-.buttonReduct{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.buttonReduct {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
 
-.btnDemo{
-    padding: 5px;
+.btnDemo {
+	padding: 5px;
 }
 
-.icon-reduct{
-    width: 30px;
-    height: 30px;
+.icon-reduct {
+	width: 30px;
+	height: 30px;
 }
 
-.modalOverlay{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(94, 94, 94, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+.modalOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(94, 94, 94, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
 }
 
-.modalContent{
-    position: relative;
-    animation: fadeIn 0.3s ease-in-out;
+.modalContent {
+	position: relative;
+	animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+	from {
+		opacity: 0;
+		transform: scale(0.9);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
 }

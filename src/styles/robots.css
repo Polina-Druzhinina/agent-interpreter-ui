@@ -1,19 +1,19 @@
-.cell.emptiness{
-    background-color: #808080;
+.cell.emptiness {
+	background-color: #808080;
 }
 
-.cell.wall{
-    background-color: #36454F;
+.cell.wall {
+	background-color: #36454f;
 }
 
-.cell.rose{
-    background-color: #E0115F;
+.cell.rose {
+	background-color: #e0115f;
 }
 
-.cell.mint{
-    background-color: #3EB489;
+.cell.mint {
+	background-color: #3eb489;
 }
 
-.cell.cornflower{
-    background-color: #6495ED;
+.cell.cornflower {
+	background-color: #6495ed;
 }
